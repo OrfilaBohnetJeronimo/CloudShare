@@ -47,6 +47,9 @@ function createPost() {
     }
 }
 
+// Vincular la función createPost al botón de publicar
+document.getElementById('publishButton').addEventListener('click', createPost);
+
 // Función para eliminar una publicación
 function deletePost(postId) {
     if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
