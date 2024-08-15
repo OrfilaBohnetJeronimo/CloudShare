@@ -37,6 +37,8 @@ function createPost() {
                         title: title,
                         content: content,
                         imageUrl: url
+                    }).catch(error => {
+                        console.error("Error al guardar la publicación: ", error);
                     });
                 }).catch(error => {
                     console.error("Error al obtener la URL de la imagen: ", error);
@@ -64,7 +66,9 @@ document.getElementById('publishButton').addEventListener('click', createPost);
 // Función para eliminar una publicación
 function deletePost(postId) {
     if (confirm("¿Estás seguro de que deseas eliminar esta publicación?")) {
-        database.ref('posts/' + postId).remove();
+        database.ref('posts/' + postId).remove().catch(error => {
+            console.error("Error al eliminar la publicación: ", error);
+        });
         document.getElementById(postId).remove();
     }
 }
@@ -73,10 +77,12 @@ function deletePost(postId) {
 function addComment(postId) {
     const commentText = document.getElementById(`comment-${postId}`).value;
     const commentRef = database.ref(`posts/${postId}/comments`).push();
-
+    
     if (commentText) {
         commentRef.set({
             text: commentText
+        }).catch(error => {
+            console.error("Error al agregar el comentario: ", error);
         });
     }
 }
