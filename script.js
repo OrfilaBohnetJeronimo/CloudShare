@@ -7,13 +7,17 @@ const firebaseConfig = {
     storageBucket: "snapshare-12e55.appspot.com",
     messagingSenderId: "586012490975",
     appId: "1:586012490975:web:84a11d8c21b47640877d6a",
+    measurementId: "G-7VEWEN7MKM"
 };
+
+// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// Obtener referencias a los servicios de Firebase
 const database = firebase.database();
 const storage = firebase.storage();
 
+// Función para crear una publicación
 function createPost() {
     const username = document.getElementById('username').value;
     const title = document.getElementById('title').value;
@@ -21,11 +25,11 @@ function createPost() {
     const image = document.getElementById('image').files[0];
 
     if (username && title && content) {
-        const postRef = firebase.database().ref('posts').push();
+        const postRef = database.ref('posts').push();
         const postId = postRef.key;
 
         if (image) {
-            const storageRef = firebase.storage().ref('images/' + postId + '/' + image.name);
+            const storageRef = storage.ref('images/' + postId + '/' + image.name);
             storageRef.put(image).then(snapshot => {
                 snapshot.ref.getDownloadURL().then(url => {
                     postRef.set({
@@ -34,7 +38,6 @@ function createPost() {
                         content: content,
                         imageUrl: url
                     });
-                    console.log("Publicación con imagen creada.");
                 }).catch(error => {
                     console.error("Error al obtener la URL de la imagen: ", error);
                 });
@@ -46,8 +49,6 @@ function createPost() {
                 username: username,
                 title: title,
                 content: content
-            }).then(() => {
-                console.log("Publicación sin imagen creada.");
             }).catch(error => {
                 console.error("Error al crear la publicación: ", error);
             });
@@ -57,6 +58,7 @@ function createPost() {
     }
 }
 
+// Vincular la función createPost al botón de publicar
 document.getElementById('publishButton').addEventListener('click', createPost);
 
 // Función para eliminar una publicación
